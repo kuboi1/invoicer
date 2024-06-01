@@ -1,19 +1,75 @@
-import { FieldErrors, FieldValues, UseFormRegister, ValidationRule } from "react-hook-form";
+import { useEffect } from "react";
+import { ValidationRule, useWatch } from "react-hook-form";
+import { InputControls, InputType } from "../../../types/components/FormTypes";
 
 interface TextInputProps {
-    register: UseFormRegister<FieldValues>,
+    inputControls: InputControls,
     name: string,
     label: string,
-    errors: FieldErrors,
+    type?: InputType,
     required?: boolean,
+    maxLength?: number,
     pattern?: ValidationRule<RegExp>,
-    className?: string
+    className?: string,
+    onChangeFormat?: (value: string) => string
 }
 
 const TextInput = (props: TextInputProps) => {
-    const { register, name, label, required, errors, pattern, className } = props
+    const { name, label, required, maxLength, type, pattern, className, onChangeFormat } = props
 
-    console.log(errors[name])
+    const { control, register, setValue, errors } = props.inputControls
+
+    const needsWatch = maxLength || onChangeFormat || type === InputType.Int || type === InputType.Float
+
+    const formatInt = (value: string) => value.replace(/\D/g, '')
+
+    const formatFloat = (value: string) => {
+        // Remove any non-digit and non-period characters
+        value = value.replace(/[^0-9.]/g, '')
+
+        // Split the value on periods to separate the integer and decimal parts
+        const parts = value.split('.')
+
+        // If there's more than one period, keep only the first integer and first decimal part
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts[1]
+        } else {
+            value = parts.join('.')
+        }
+
+        return value
+    }
+
+    // Handle watch if needed
+    const watch = useWatch({ control, name })
+
+    useEffect(() => {
+        if (needsWatch && watch) {
+            let value: string = (typeof watch === 'string') ? watch : String(watch)
+
+            // Format int input
+            if (type === InputType.Int) {
+                value = formatInt(value)
+            }
+
+            // Format float input
+            if (type === InputType.Float) {
+                value = formatFloat(value)
+            }
+
+            // Format on change
+            if (onChangeFormat) {
+                value = onChangeFormat(value)
+            }
+
+            // Handle max length
+            if (maxLength && value.length > maxLength) {
+                value = value.substring(0, maxLength)
+            }
+
+            setValue(name, value)
+        }
+    }, [needsWatch, watch, setValue, maxLength, name, onChangeFormat, type])
 
     return (
         <input

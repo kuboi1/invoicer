@@ -1,21 +1,11 @@
 import { FieldValues, useForm } from 'react-hook-form';
-import TextInput from './inputs/TextInput';
 import SubmitButton from './inputs/SubmitButton';
-
-enum Input {
-    Name = 'name',
-    CIN = 'cin',
-    VAT = 'vat',
-    Street = 'street',
-    City = 'city',
-    ZIP = 'zip',
-    Rate = 'rate',
-    Hours = 'hours',
-    ExtraIncome = 'extra_income',
-    Expenses = 'expenses',
-    WorkLabel = 'work_label',
-    ContractInfo = 'contract_info'
-}
+import PresetManager from '../../model/PresetManager';
+import { useState } from 'react';
+import TextAreaInput from './inputs/TextAreaInput';
+import { InputControls, InputType, InvoiceFormInput, InvoiceFormValues } from '../../types/components/FormTypes';
+import TextInput from './inputs/TextInput';
+import FormPreset from '../FormPreset';
 
 interface InvoiceFormProps {
     onSubmit: (values: FieldValues) => void
@@ -24,13 +14,83 @@ interface InvoiceFormProps {
 const InvoiceForm = (props: InvoiceFormProps) => {
     const { onSubmit } = props
 
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const presetManager = new PresetManager()
+
+    const defaultFormValues: InvoiceFormValues = {
+        [InvoiceFormInput.Name]: '',
+        [InvoiceFormInput.CIN]: '',
+        [InvoiceFormInput.VAT]: '',
+        [InvoiceFormInput.Street]: '',
+        [InvoiceFormInput.City]: '',
+        [InvoiceFormInput.ZIP]: '',
+        [InvoiceFormInput.Rate]: '',
+        [InvoiceFormInput.Hours]: '',
+        [InvoiceFormInput.ExtraIncome]: '',
+        [InvoiceFormInput.Expenses]: '',
+        [InvoiceFormInput.WorkLabel]: '',
+        [InvoiceFormInput.ContractInfo]: ''
+    }
+
+    const [selectedPreset, setSelectedPreset] = useState<string|null>(null)
+
+    const { control, register, reset, setValue, setFocus, handleSubmit, formState: { errors } } = useForm({
+        defaultValues: presetManager.getPresetValues(selectedPreset) as FieldValues
+    })
+
+    const inputControls: InputControls = {
+        control,
+        register,
+        reset,
+        setValue,
+        errors
+    }
+
+    const onPresetClick = (key: string) => {
+        if (selectedPreset === key) {
+            setSelectedPreset(null)
+            reset(defaultFormValues)
+        } else {
+            setSelectedPreset(key)
+            reset(presetManager.getPresetValues(key) as FieldValues)
+            // Focus the hours worked input after a short delay
+            setTimeout(() => {
+                setFocus(InvoiceFormInput.Hours);
+            }, 0.1)
+        }
+    }
+
+    const formatZipCode = (value: string) => {
+        // Format the ZIP code to "123 45"
+        if (value.length > 3) {
+            value = value.slice(0, 3) + ' ' + value.slice(3, 5)
+        }
+        
+        return value
+    }
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-8'
         >
+            <div
+                className='pb-4 border-b space-y-4'
+            >
+                <h2>Presets</h2>
+
+                <div>
+                    {presetManager.getPresetKeys().map((key: string) => (
+                        <FormPreset 
+                            key={key}
+                            name={key} 
+                            color={presetManager.getPresetColor(key)}
+                            isFocused={key === selectedPreset} 
+                            onClick={() => onPresetClick(key)} 
+                        />
+                    ))}
+                </div>
+            </div>
+
             <div
                 className='w-full space-y-8'
             >
@@ -43,26 +103,28 @@ const InvoiceForm = (props: InvoiceFormProps) => {
                             className='grid sm:grid-cols-2 gap-3'
                         >
                             <TextInput 
-                                register={register}
-                                name={Input.Name}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.Name}
                                 label='Name'
                                 required={true}
-                                errors={errors}
                                 className='sm:col-span-full'
                             />
                             <TextInput 
-                                register={register}
-                                name={Input.CIN}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.CIN}
+                                type={InputType.Int}
+                                maxLength={7}
                                 label='CIN'
                                 required={true}
-                                errors={errors}
+                                pattern={/^\d{7}$/}
                             />
                             <TextInput 
-                                register={register}
-                                name={Input.VAT}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.VAT}
+                                maxLength={10}
                                 label='VAT ID'
                                 required={true}
-                                errors={errors}
+                                pattern={/^CZ\d{8}$/}
                             />
                         </div>
                     </div>
@@ -73,27 +135,27 @@ const InvoiceForm = (props: InvoiceFormProps) => {
                             className='grid md:grid-cols-3 gap-3'
                         >
                             <TextInput 
-                                register={register}
-                                name={Input.Street}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.Street}
                                 label='Street'
                                 required={true}
-                                errors={errors}
                                 className='col-span-full'
                             />
                             <TextInput 
-                                register={register}
-                                name={Input.City}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.City}
                                 label='City'
                                 required={true}
-                                errors={errors}
                                 className='md:col-span-2'
                             />
                             <TextInput 
-                                register={register}
-                                name={Input.ZIP}
+                                inputControls={inputControls}
+                                name={InvoiceFormInput.ZIP}
+                                type={InputType.Int}
                                 label='ZIP code'
                                 required={true}
-                                errors={errors}
+                                onChangeFormat={formatZipCode}
+                                pattern={/^\d{3}\s\d{2}$/}
                             />
                         </div>
                     </div>
@@ -106,40 +168,39 @@ const InvoiceForm = (props: InvoiceFormProps) => {
                         className='grid grid-cols-2 gap-3'
                     >
                         <TextInput 
-                            register={register}
-                            name={Input.WorkLabel}
+                            inputControls={inputControls}
+                            name={InvoiceFormInput.WorkLabel}
                             label='Label'
                             required={true}
-                            errors={errors}
                             className='col-span-full'
                         />
                         <TextInput 
-                            register={register}
-                            name={Input.Rate}
+                            inputControls={inputControls}
+                            name={InvoiceFormInput.Rate}
+                            type={InputType.Float}
                             label='Rate CZK/hr'
                             required={true}
-                            errors={errors}
                         />
                         <TextInput 
-                            register={register}
-                            name={Input.Hours}
+                            inputControls={inputControls}
+                            name={InvoiceFormInput.Hours}
+                            type={InputType.Float}
                             label='Hours Worked'
                             required={true}
-                            errors={errors}
                         />
                         <TextInput 
-                            register={register}
-                            name={Input.ExtraIncome}
+                            inputControls={inputControls}
+                            name={InvoiceFormInput.ExtraIncome}
+                            type={InputType.Float}
                             label='Extra Income'
                             required={true}
-                            errors={errors}
                         />
                         <TextInput 
-                            register={register}
-                            name={Input.Expenses}
+                            inputControls={inputControls}
+                            name={InvoiceFormInput.Expenses}
+                            type={InputType.Float}
                             label='Expenses'
                             required={true}
-                            errors={errors}
                         />
                     </div>  
                 </div>
@@ -147,11 +208,10 @@ const InvoiceForm = (props: InvoiceFormProps) => {
                 <div className='space-y-4'>
                     <h2>Extra Info</h2>
 
-                    <TextInput 
-                        register={register}
-                        name={Input.ContractInfo}
+                    <TextAreaInput 
+                        inputControls={inputControls}
+                        name={InvoiceFormInput.ContractInfo}
                         label='Contract Info'
-                        errors={errors}
                         className='w-full'
                     />
                 </div>
