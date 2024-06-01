@@ -1,0 +1,15 @@
+@import url('./fonts.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Lato', sans-serif;
+
+  @apply bg-zinc-900 text-white m-0
+}
+
+h1 {
+  @apply text-6xl font-bold my-5
+}
