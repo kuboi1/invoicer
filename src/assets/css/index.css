@@ -10,6 +10,18 @@ body {
   @apply bg-zinc-900 text-white m-0
 }
 
+section {
+  @apply lg:my-8 lg:mx-32 xl:my-16 xl:mx-64
+}
+
 h1 {
   @apply text-6xl font-bold my-5
+}
+
+h2 {
+  @apply text-3xl font-bold
+}
+
+h3 {
+  @apply text-2xl font-bold
 }
