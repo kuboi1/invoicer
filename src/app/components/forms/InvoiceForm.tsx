@@ -218,7 +218,7 @@ const InvoiceForm = (props: InvoiceFormProps) => {
 
             </div>
 
-            <SubmitButton text='Submit' />
+            <SubmitButton text='Generate Invoice' />
         </form>
     )
 }
