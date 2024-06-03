@@ -31,7 +31,7 @@ const FormPreset = (props: FormPresetProps) => {
     return (
         <button 
             type='button'
-            className='p-2 rounded-lg transition-colors'
+            className='p-2 rounded-lg transition-colors font-bold'
             style={{
                 backgroundColor: getBgColor(),
                 outline: (isFocused ? 'solid 2px white' : undefined)

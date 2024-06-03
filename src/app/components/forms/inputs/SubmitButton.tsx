@@ -9,7 +9,7 @@ const SubmitButton = (props: SubmitButtonProps) => {
     return (
         <button 
             type="submit"
-            className='bg-blue-400 rounded-md p-3 hover:bg-blue-500 transition-colors'
+            className='button-primary'
         >
             {text}
         </button>

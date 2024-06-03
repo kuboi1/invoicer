@@ -152,7 +152,15 @@ const PDFInvoice = (props: PDFInvoiceProps) => {
                             <Text>IČ</Text>
                             <Text>{userData.cin}</Text>
                         </View>
-                        <Text>Neplátce DPH</Text>
+                        {userData.vat ? (
+                                <View style={styles.labelValueRow}>
+                                    <Text>DIČ</Text>
+                                    <Text>{userData.vat}</Text>
+                                </View>
+                            ) : (
+                                <Text>Neplátce DPH</Text>
+                            )
+                        }
                     </View>
                     <View style={styles.column}>
                         <View style={styles.labelValueRow}>
