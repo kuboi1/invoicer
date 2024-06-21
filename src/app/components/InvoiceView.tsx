@@ -50,10 +50,14 @@ const InvoiceView = (props: InvoiceViewProps) => {
                                 <></>
                             ) : (
                                 <span
-                                    className='button-primary flex items-center space-x-2'
+                                    className='button-primary w-full flex justify-center items-center space-x-2 group'
                                 >
-                                    <span>Download</span>
-                                    <FontAwesomeIcon icon={faFileArrowDown} className='w-5 h-5' />
+                                    <div className='overflow-hidden w-fit'>
+                                        <span className='block translate-x-24 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100'>
+                                            Download
+                                        </span>
+                                    </div>
+                                    <FontAwesomeIcon icon={faFileArrowDown} className='block w-5 h-5 -translate-x-12 group-hover:translate-x-0 transition-transform' />
                                 </span>
                             )
                         }}
