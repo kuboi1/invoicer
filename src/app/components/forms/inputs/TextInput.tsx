@@ -40,10 +40,10 @@ const TextInput = (props: TextInputProps) => {
         return value
     }
 
-    // Handle watch if needed
     const watch = useWatch({ control, name })
-
+    
     useEffect(() => {
+        // Handle watch if needed
         if (needsWatch && watch) {
             let value: string = (typeof watch === 'string') ? watch : String(watch)
 

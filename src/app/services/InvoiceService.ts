@@ -56,7 +56,7 @@ export default class InvoiceService {
     }
 
     private static generateQrPayment(invoiceNumber: string, bankAcc: string, price: number, dueDate: Moment) {
-        return `SPD*1.0*ACC:${InvoiceService.calculateIban(bankAcc)}*AM:${price.toFixed(2)}*CC:CZK*X-VS:${InvoiceService.getVariableSymbol(invoiceNumber)}*DT:${dueDate.format('YYYYMMDD')}`
+        return `SPD*1.0*ACC:${InvoiceService.calculateIban(bankAcc)}*AM:${price.toFixed(2)}*CC:CZK*X-VS:${InvoiceService.getVariableSymbol(invoiceNumber)}*PT:IP*`
     }
 
     private static generateInvoiceNumber() {
