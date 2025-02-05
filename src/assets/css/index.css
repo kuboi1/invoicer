@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Lato', sans-serif;
 
@@ -11,7 +15,7 @@ body {
 }
 
 #root {
-  @apply w-screen h-fit xl:h-screen p-5 lg:p-10
+  @apply h-fit p-5 lg:p-10
 }
 
 h1 {
@@ -27,9 +31,9 @@ h3 {
 }
 
 .container {
-  @apply p-4 md:p-10 bg-zinc-800 rounded-md border border-white w-full min-h-32
+  @apply p-4 md:p-10 bg-zinc-800 rounded-md border border-white w-full min-h-32 min-h-full
 }
 
 .button-primary {
-  @apply block text-xl font-bold text-center w-full p-3 transition-colors rounded-md bg-blue-400 hover:bg-blue-500
+  @apply text-xl font-bold text-center p-3 transition-colors rounded-md bg-blue-400 hover:bg-blue-500
 }
