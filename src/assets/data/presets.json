@@ -2,18 +2,18 @@
     "Visualio": {
         "color": "#f1ce0d",
         "values": {
-            "name": "VISUALIO s.r.o",
+            "name": "VISUALIO s.r.o.",
             "cin": "2027933",
             "vat": "CZ02027933",
             "street": "Klimentská 1652/36",
             "city": "Praha - Nové Město",
             "zip": "110 00",
-            "rate": 400,
+            "rate": 500,
             "hours": "",
-            "extra_income": 1503,
+            "extra_income": 3503,
             "expenses": 500,
-            "work_label": "Programátorské práce (210403801)",
-            "contract_info": "Fakturuji vám na základě rámcové smlouvy číslo 210103801 uzavřené dne 1.6.2022"
+            "work_label": "Programátorské práce (250103801)",
+            "contract_info": "Fakturuji vám na základě rámcové smlouvy číslo 250103801 uzavřené dne 30.12.2024"
         }
     }
 }
